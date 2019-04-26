@@ -1,0 +1,47 @@
+<style lang="less">
+  .Activity {
+
+	}
+</style>
+<template>
+  <view class="Activity">
+    Activity
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class Activity extends wepy.page {
+    config = {
+      navigationBarTitleText: '爆款活动'
+    }
+    components = {
+      
+    }
+
+
+    data = {
+      mynum: 20,
+      
+    }
+
+    computed = {
+     
+    }
+
+    methods = {
+
+      
+     
+    }
+
+    events = {
+      
+    }
+
+    onLoad() {
+      let self = this
+      
+    }
+  }
+</script>

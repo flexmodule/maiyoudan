@@ -1,0 +1,47 @@
+<style lang="less">
+  .My {
+
+	}
+</style>
+<template>
+  <view class="My">
+    My
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class My extends wepy.page {
+    config = {
+      navigationBarTitleText: '个人中心'
+    }
+    components = {
+      
+    }
+
+
+    data = {
+      mynum: 20,
+      
+    }
+
+    computed = {
+     
+    }
+
+    methods = {
+
+      
+     
+    }
+
+    events = {
+      
+    }
+
+    onLoad() {
+      let self = this
+      
+    }
+  }
+</script>

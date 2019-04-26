@@ -1,0 +1,47 @@
+<style lang="less">
+  .Detail {
+
+	}
+</style>
+<template>
+  <view class="Detail">
+    Detail
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class Detail extends wepy.page {
+    config = {
+      navigationBarTitleText: '麦优单详情'
+    }
+    components = {
+      
+    }
+
+
+    data = {
+      mynum: 20,
+      
+    }
+
+    computed = {
+     
+    }
+
+    methods = {
+
+      
+     
+    }
+
+    events = {
+      
+    }
+
+    onLoad() {
+      let self = this
+      
+    }
+  }
+</script>

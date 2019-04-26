@@ -1,0 +1,47 @@
+<style lang="less">
+  .Search {
+
+	}
+</style>
+<template>
+  <view class="Search">
+    search
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  export default class Search extends wepy.page {
+    config = {
+      navigationBarTitleText: '麦优单超级分类搜索'
+    }
+    components = {
+      
+    }
+
+
+    data = {
+      mynum: 20,
+      
+    }
+
+    computed = {
+     
+    }
+
+    methods = {
+
+      
+     
+    }
+
+    events = {
+      
+    }
+
+    onLoad() {
+      let self = this
+      
+    }
+  }
+</script>
