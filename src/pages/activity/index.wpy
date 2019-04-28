@@ -5,18 +5,22 @@
 </style>
 <template>
   <view class="Activity">
-    Activity
+    <returnvalue></returnvalue>
+		<tab></tab>
   </view>
 </template>
 
 <script>
-  import wepy from 'wepy'
+	import wepy from 'wepy'
+	import Tab from '@/components/tab' 
+	import Returnvalue from '@/components/returnvalue' 
   export default class Activity extends wepy.page {
     config = {
-      navigationBarTitleText: '爆款活动'
+      navigationBarTitleText: '热门活动'
     }
     components = {
-      
+			tab:Tab,
+			returnvalue:Returnvalue
     }
 
 

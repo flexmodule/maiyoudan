@@ -1,5 +1,6 @@
 <style lang="less">
 .Home {
+	padding-bottom: 160rpx;
   .header {
     display: flex;
     align-items: center;
@@ -97,8 +98,8 @@
       }
     }
   }
-  .harvest {
-    .title {
+  .harvest,.bill,.regular {
+    .bigtitle {
       display: flex;
       align-items: center;
       padding: 10rpx 20rpx;
@@ -124,7 +125,94 @@
         }
       }
     }
-  }
+    .main {
+      padding: 20rpx;
+      .mainbody {
+				display: flex;
+				background: #fff;
+        align-items: center;
+        padding: 20rpx;
+        box-shadow: 0 0 10rpx rgba(0, 0, 0, 0.05);
+        margin-bottom: 20rpx;
+        border-radius: 20rpx;
+        position: relative;
+        .mainbody-l {
+          width: 200rpx;
+          height: 200rpx;
+          border-radius: 10rpx;
+          margin-right: 20rpx;
+          image {
+            width: 100%;
+            height: 100%;
+            border-radius: 10rpx;
+          }
+        }
+        .mainbody-r {
+          width: 400rpx;
+          .title {
+            font: 700 28rpx/28rpx '';
+            color: #282828;
+          }
+          .des {
+            color: #999999;
+            font: 24rpx/24rpx '';
+            margin: 20rpx 0 30rpx;
+          }
+          .position {
+            display: flex;
+            align-items: center;
+            .position-l {
+              width: 48rpx;
+              height: 48rpx;
+              margin-right: 10rpx;
+              image {
+                width: 100%;
+                height: 100%;
+              }
+            }
+            .position-r {
+              font: 24rpx/30rpx '';
+              color: #282828;
+            }
+          }
+          .money {
+            margin-top: 10rpx;
+            display: flex;
+            align-items: center;
+            .money-l {
+              width: 48rpx;
+              height: 48rpx;
+              margin-right: 10rpx;
+              image {
+                width: 100%;
+                height: 100%;
+              }
+            }
+            .money-r {
+              font: 24rpx/40rpx '';
+              color: #282828;
+            }
+          }
+        }
+        .detail {
+          width: 150rpx;
+          position: absolute;
+          right: 20rpx;
+          bottom: 10rpx;
+          text-align: center;
+          background: #f9dc8e;
+          color: #fff;
+          border-radius: 20rpx;
+          font: 24rpx/50rpx '';
+        }
+      }
+    }
+	}
+	.version,.copyright {
+		font: 26rpx/40rpx "";
+		text-align: center;
+		color: #999;
+	}
 }
 </style>
 <template>
@@ -138,7 +226,7 @@
           custom-item="{{customItem}}"
         >
           <view class="img">
-            <image src="../../img/position.png"/>
+            <image src="../../img/position.png"></image>
           </view>
           <view class="positiontxt">{{positionTxt}}</view>
           <view class="triangle"></view>
@@ -146,13 +234,13 @@
       </view>
       <view class="search" @tap="tosearch">
         <view class="img">
-          <image src="../../img/search.png"/>
+          <image src="../../img/search.png"></image>
         </view>
         <view class="searchtxt">请输入关键词,如:肯德基优惠</view>
       </view>
     </view>
     <view class="label" @tap="tosearch">
-      <view class="txt">分类搜索标签:</view>
+      <view class="txt">热门搜索标签:</view>
       <view class="data">美食</view>
       <view class="data">休闲娱乐</view>
       <view class="data">旅游</view>
@@ -169,13 +257,13 @@
       >
         <block wx:for="{{imgUrls}}" wx:key="{{item}}">
           <swiper-item>
-            <image src="{{item}}" class="slide-image" width="355" height="150"/>
+            <image src="{{item}}" class="slide-image" width="355" height="150"></image>
           </swiper-item>
         </block>
       </swiper>
     </view>
     <view class="harvest">
-      <view class="title">
+      <view class="bigtitle">
         <view class="title-l">
           今日小麦粒
           <text>(可收获)</text>
@@ -183,26 +271,129 @@
         <view class="title-r">
           <view class="title-rl">更多</view>
           <view class="title-rr">
-            <image src="../../img/more.png"/>
+            <image src="../../img/more.png"></image>
           </view>
         </view>
       </view>
       <view class="main">
         <repeat for="{{harvestdata}}" key="index" index="index" item="item">
           <view class="mainbody">
-            <view class="mainbody-l"></view>
-            <view class="mainbody-r"></view>
+            <view class="mainbody-l">
+              <image src="{{item.mainImg?item.mainImg:'../../img/static.png'}}"></image>
+            </view>
+            <view class="mainbody-r">
+              <view class="title">{{item.name?item.name:''}}</view>
+              <view class="des">{{item.descriptions?item.descriptions:''}}</view>
+              <view class="position">
+                <view class="position-l">
+                  <image src="../../img/place.png"></image>
+                </view>
+                <view class="position-r">{{item.area?item.area:''}}</view>
+              </view>
+              <view class="money">
+                <view class="money-l">
+                  <image src="../../img/money.png"></image>
+                </view>
+                <view class="money-r">¥{{item.averagePrice?item.averagePrice:''}}</view>
+              </view>
+              <view class="detail">详情</view>
+            </view>
           </view>
         </repeat>
       </view>
     </view>
+		<view class="bill">
+      <view class="bigtitle">
+        <view class="title-l">
+          今日优单
+          <text>(可购买)</text>
+        </view>
+        <view class="title-r">
+          <view class="title-rl">更多</view>
+          <view class="title-rr">
+            <image src="../../img/more.png"></image>
+          </view>
+        </view>
+      </view>
+      <view class="main">
+        <repeat for="{{harvestdata}}" key="index" index="index" item="item">
+          <view class="mainbody">
+            <view class="mainbody-l">
+              <image src="{{item.mainImg?item.mainImg:'../../img/static.png'}}"></image>
+            </view>
+            <view class="mainbody-r">
+              <view class="title">{{item.name?item.name:''}}</view>
+              <view class="des">{{item.descriptions?item.descriptions:''}}</view>
+              <view class="position">
+                <view class="position-l">
+                  <image src="../../img/place.png"></image>
+                </view>
+                <view class="position-r">{{item.area?item.area:''}}</view>
+              </view>
+              <view class="money">
+                <view class="money-l">
+                  <image src="../../img/money.png"></image>
+                </view>
+                <view class="money-r">¥{{item.averagePrice?item.averagePrice:''}}</view>
+              </view>
+              <view class="detail">详情</view>
+            </view>
+          </view>
+        </repeat>
+      </view>
+    </view>
+		<view class="regular">
+      <view class="bigtitle">
+        <view class="title-l">
+          常年固定优惠
+          <text>(不限时间)</text>
+        </view>
+        <view class="title-r">
+          <view class="title-rl">更多</view>
+          <view class="title-rr">
+            <image src="../../img/more.png"></image>
+          </view>
+        </view>
+      </view>
+      <view class="main">
+        <repeat for="{{harvestdata}}" key="index" index="index" item="item">
+          <view class="mainbody">
+            <view class="mainbody-l" wx:if="{{item.mainImg?true:false}}">
+              <image src="{{item.mainImg?item.mainImg:'../../img/static.png'}}"></image>
+            </view>
+            <view class="mainbody-r">
+              <view class="title">{{item.name?item.name:''}}</view>
+              <view class="des">{{item.descriptions?item.descriptions:''}}</view>
+              <view class="position">
+                <view class="position-l">
+                  <image src="../../img/place.png"></image>
+                </view>
+                <view class="position-r">{{item.area?item.area:''}}</view>
+              </view>
+              <view class="money">
+                <view class="money-l">
+                  <image src="../../img/money.png"></image>
+                </view>
+                <view class="money-r">¥{{item.averagePrice?item.averagePrice:''}}</view>
+              </view>
+              <view class="detail">详情</view>
+            </view>
+          </view>
+        </repeat>
+      </view>
+    </view>
+		<view class="version">版本号V1.0.1</view>
+		<view class="copyright">Copyright@2019 麦优单</view>
+		<tab></tab>
   </view>
 </template>
 
 <script>
 import wepy from 'wepy';
 import QQMapWX from '@/utils/qqmap-wx-jssdk.min.js';
-import {hostGoodsList} from "@/api/api.js"
+import api from '@/api/api.js';
+import Template from '@/utils/template';
+import Tab from '@/components/tab' 
 export default class Home extends wepy.page {
   config = {
     navigationBarTitleText: '麦优单首页',
@@ -210,8 +401,9 @@ export default class Home extends wepy.page {
     navigationBarBackgroundColor: '#f9dc8e',
     navigationBarTextStyle: 'white'
   };
-  components = {};
-
+  components = {
+		tab: Tab
+	}
   data = {
     imgUrls: [
       'https://images.unsplash.com/photo-1551334787-21e6bd3ab135?w=640',
@@ -226,16 +418,17 @@ export default class Home extends wepy.page {
     customItem: '不限地区',
     positionTxt: '',
     longitude: '',
-		latitude: '',
-		harvestdata:[]
+    latitude: '',
+    harvestdata: []
   };
 
   computed = {};
 
   methods = {
     bindRegionChange(e) {
-			this.region = e.detail.value;
-			this.positionTxt=this.region[0]+','+this.region[1]+','+this.region[2];
+      this.region = e.detail.value;
+      this.positionTxt =
+        this.region[0] + ',' + this.region[1] + ',' + this.region[2];
     },
     tosearch() {
       wepy.navigateTo({
@@ -245,77 +438,82 @@ export default class Home extends wepy.page {
         complete: function() {}
       });
     }
-	};
-	storelist() {
-    var _this = this;
-    wepy.getLocation({type: 'wgs84'}).then(res => {
-        _this.latitude = res.latitude;
-				_this.longitude = res.longitude;
-				let data={
-					"type":1,
-					"takeoutSwitch":1,
-					"pageNo":1,
-					"pageSize":10,
-					"currentLatitude":_this.latitude,
-					"currentLongitude":_this.longitude,
-					"lang":""
-				}
-        const json= hostGoodsList({query:data})
-		})
+  };
+  async storelist() {
+    let that = this;
+    const res = await wepy.getLocation({ type: 'wgs84' });
+    that.latitude = res.latitude;
+    that.longitude = res.longitude;
+    let data = {
+      type: 1,
+      takeoutSwitch: 1,
+      pageNo: 1,
+      pageSize: 10,
+      currentLatitude: that.latitude,
+      currentLongitude: that.longitude,
+      lang: ''
+    };
+    const json = await api.hostGoodsList({ query: data });
+    if (json.data.meta.success) {
+      that.harvestdata = json.data.list;
+    } else {
+      Template.error(json.data.meta.message);
+    }
+    that.$apply();
   }
   getplacename() {
     let that = this;
     let qqmapsdk = new QQMapWX({
       key: 'RIEBZ-V6MWI-SLQGO-54AX4-OEUFE-FQFUU'
-		});
-		wepy.getLocation({type: 'wgs84'}).then(res => {
-			that.longitude = res.longitude;
-        that.latitude = res.latitude;
-        qqmapsdk.reverseGeocoder({
-          location: {
-            latitude: that.latitude,
-            longitude: that.longitude
-          },
-          success: function(res) {
-            console.log(res);
-            if (res.status == 0) {
-              if (res.result.address) {
-                if (res.result.address_component) {
-                  if (
-                    res.result.address_component.province &&
-                    res.result.address_component.city &&
-                    res.result.address_component.district
-                  ) {
-										that.region[0]=res.result.address_component.province;
-										that.region[1]=res.result.address_component.city;
-										that.region[2]=res.result.address_component.district;
-                    that.positionTxt =
-                      res.result.address_component.province +
-                      ',' +
-                      res.result.address_component.city +
-                      ',' +
-                      res.result.address_component.district;
-                  }
+    });
+    wepy.getLocation({ type: 'wgs84' }).then(res => {
+      that.longitude = res.longitude;
+      that.latitude = res.latitude;
+      qqmapsdk.reverseGeocoder({
+        location: {
+          latitude: that.latitude,
+          longitude: that.longitude
+        },
+        success: function(res) {
+          console.log(res);
+          if (res.status == 0) {
+            if (res.result.address) {
+              if (res.result.address_component) {
+                if (
+                  res.result.address_component.province &&
+                  res.result.address_component.city &&
+                  res.result.address_component.district
+                ) {
+                  that.region[0] = res.result.address_component.province;
+                  that.region[1] = res.result.address_component.city;
+                  that.region[2] = res.result.address_component.district;
+                  that.positionTxt =
+                    res.result.address_component.province +
+                    ',' +
+                    res.result.address_component.city +
+                    ',' +
+                    res.result.address_component.district;
                 }
-                that.$apply();
               }
+              that.$apply();
             }
-          },
-          fail: function(res) {
-            console.log(res);
-          },
-          complete: function(res) {}
-        });
-		});
+          }
+        },
+        fail: function(res) {
+          console.log(res);
+        },
+        complete: function(res) {}
+      });
+    });
   }
 
   events = {};
 
   onLoad() {
-		let self = this;
-		
-		this.getplacename();
-		this.storelist();
+    let self = this;
+
+    this.getplacename();
+    this.storelist();
   }
 }
 </script>

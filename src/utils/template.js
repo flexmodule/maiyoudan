@@ -1,16 +1,12 @@
-/**
- * 提示与加载工具类
- */
-export default class Tips {
+
+export default class Template {
   constructor() {
-    this.isLoading = false;
+    
   }
   /**
    * 弹出提示框
    */
-	add() {
-		return 1
-	}
+
   static success(title, duration = 500) {
     setTimeout(() => {
       wx.showToast({
@@ -89,7 +85,7 @@ export default class Tips {
   static error(title, onHide) {
     wx.showToast({
       title: title,
-      image: "../images/error.png",
+      image: "/img/err.png",
       mask: true,
       duration: 500
     });
@@ -100,44 +96,5 @@ export default class Tips {
       }, 500);
     }
   }
-
-  /**
-   * 弹出加载提示
-   */
-  static loading(title = "加载中") {
-    if (Tips.isLoading) {
-      return;
-    }
-    Tips.isLoading = true;
-    wx.showLoading({
-      title: title,
-      mask: true
-    });
-  }
-
-  /**
-   * 加载完毕
-   */
-  static loaded() {
-    if (Tips.isLoading) {
-      Tips.isLoading = false;
-      wx.hideLoading();
-    }
-  }
-
-  static share(title, url, desc) {
-    return {
-      title: title,
-      path: url,
-      desc: desc,
-      success: function(res) {
-        Tips.toast("分享成功");
-      }
-    };
-  }
 }
-
-/**
- * 静态变量，是否加载中
- */
 

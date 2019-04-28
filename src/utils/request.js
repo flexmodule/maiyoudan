@@ -15,6 +15,4 @@ const wxRequest = async(params = {}, url) => {
 	wepy.hideLoading();
 	return res;
 };
-module.exports = {
-    wxRequest
-}
+export default wxRequest
