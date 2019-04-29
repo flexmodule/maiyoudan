@@ -44,8 +44,11 @@
 
 
     data = {
-      mynum: 20,
-      
+      latitude: "",
+			longitude:"",
+			userId:"",
+			id:"",
+			infodetail:""
     }
 
     computed = {
@@ -57,14 +60,38 @@
       
      
     }
-
+		async getdetail() {
+    let that = this;
+    const res = await wepy.getLocation({ type: 'wgs84' });
+    that.latitude = res.latitude;
+    that.longitude = res.longitude;
+    let data = {
+      currentLatitude: that.latitude,
+			currentLongitude:that.longitude,
+			userId:that.userId,
+			id:that.id
+    }
+    const json = await api.getDetail({ query: data });
+    if (json.data.meta.success) {
+      that.infodetail = json.data.list;
+    } else {
+      Template.error(json.data.meta.message);
+    }
+    that.$apply();
+  }
     events = {
       
     }
 
-    onLoad() {
+    onLoad(options) {
       let self = this
-      
+      if(options.id) {
+				this.id=options.id
+			} else {
+				this.id="";
+			}
+			this.getdetail();
+			this.$apply();
     }
   }
 </script>

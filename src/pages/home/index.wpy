@@ -10,13 +10,14 @@
     box-sizing: border-box;
     background: #f9dc8e;
     .position {
-      padding: 0 18rpx;
-      picker {
-        width: 100%;
+			padding: 0 18rpx;
+      .pickermap {
+				width: 100%;
+				display: flex;
+	     	align-items: center;
         .img {
           width: 48rpx;
           height: 48rpx;
-          display: inline-block;
           image {
             width: 100%;
             height: 100%;
@@ -24,17 +25,18 @@
         }
         .positiontxt {
           text-align: center;
-          display: inline-block;
-          font: 32rpx/48rpx '';
+					font: 26rpx/26rpx '';
+					height: 52rpx;
           max-width: 240rpx;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          color: #999;
+					color: #999;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					display: -webkit-box;
+					-webkit-line-clamp:2;
+					-webkit-box-orient: vertical;
           margin: 0 10rpx;
         }
         .triangle {
-          display: inline-block;
           width: 0;
           height: 0;
           margin-top: 10rpx;
@@ -219,18 +221,13 @@
   <view class="Home">
     <view class="header">
       <view class="position">
-        <picker
-          mode="region"
-          @change="bindRegionChange"
-          value="{{region}}"
-          custom-item="{{customItem}}"
-        >
+        <view @tap="bindRegionChange" class="pickermap">
           <view class="img">
             <image src="../../img/position.png"></image>
           </view>
           <view class="positiontxt">{{positionTxt}}</view>
           <view class="triangle"></view>
-        </picker>
+        </view>
       </view>
       <view class="search" @tap="tosearch">
         <view class="img">
@@ -277,7 +274,7 @@
       </view>
       <view class="main">
         <repeat for="{{harvestdata}}" key="index" index="index" item="item">
-          <view class="mainbody">
+          <view class="mainbody" @tap="todetail({{item.id}})">
             <view class="mainbody-l">
               <image src="{{item.mainImg?item.mainImg:'../../img/static.png'}}"></image>
             </view>
@@ -317,7 +314,7 @@
       </view>
       <view class="main">
         <repeat for="{{harvestdata}}" key="index" index="index" item="item">
-          <view class="mainbody">
+          <view class="mainbody" @tap="todetail({{item.id}})">
             <view class="mainbody-l">
               <image src="{{item.mainImg?item.mainImg:'../../img/static.png'}}"></image>
             </view>
@@ -357,7 +354,7 @@
       </view>
       <view class="main">
         <repeat for="{{harvestdata}}" key="index" index="index" item="item">
-          <view class="mainbody">
+          <view class="mainbody" @tap="todetail({{item.id}})">
             <view class="mainbody-l" wx:if="{{item.mainImg?true:false}}">
               <image src="{{item.mainImg?item.mainImg:'../../img/static.png'}}"></image>
             </view>
@@ -394,6 +391,7 @@ import QQMapWX from '@/utils/qqmap-wx-jssdk.min.js';
 import api from '@/api/api.js';
 import Template from '@/utils/template';
 import Tab from '@/components/tab' 
+import Tool from '@/utils/tem.js' 
 export default class Home extends wepy.page {
   config = {
     navigationBarTitleText: '麦优单首页',
@@ -419,16 +417,28 @@ export default class Home extends wepy.page {
     positionTxt: '',
     longitude: '',
     latitude: '',
-    harvestdata: []
+		harvestdata: [],
+		startdate:"",
+		enddate:""
   };
 
   computed = {};
 
   methods = {
-    bindRegionChange(e) {
-      this.region = e.detail.value;
-      this.positionTxt =
-        this.region[0] + ',' + this.region[1] + ',' + this.region[2];
+		todetail(id) {
+			wepy.navigateTo({
+				url: `/pages/detail/index?id=${id}`, 
+				success: function() {}, 
+				fail: function() {}
+			});
+		},
+    async bindRegionChange(e) {
+			const mapres=	await wepy.chooseLocation();
+			this.positionTxt =mapres.address;
+			this.longitude = mapres.longitude;
+			this.latitude = mapres.latitude;
+			this.storelist();
+			this.$apply();
     },
     tosearch() {
       wepy.navigateTo({
@@ -445,13 +455,16 @@ export default class Home extends wepy.page {
     that.latitude = res.latitude;
     that.longitude = res.longitude;
     let data = {
-      type: 1,
-      takeoutSwitch: 1,
+			type: "",
+			channel:"",
+			label:"",
+			startdate:that.startdate,
+			enddate:that.enddate,
       pageNo: 1,
-      pageSize: 10,
+			pageSize: 10,
+			inputvalue:"",
       currentLatitude: that.latitude,
       currentLongitude: that.longitude,
-      lang: ''
     };
     const json = await api.hostGoodsList({ query: data });
     if (json.data.meta.success) {
@@ -461,57 +474,43 @@ export default class Home extends wepy.page {
     }
     that.$apply();
   }
-  getplacename() {
+  async getplacename() {
     let that = this;
     let qqmapsdk = new QQMapWX({
       key: 'RIEBZ-V6MWI-SLQGO-54AX4-OEUFE-FQFUU'
     });
-    wepy.getLocation({ type: 'wgs84' }).then(res => {
-      that.longitude = res.longitude;
-      that.latitude = res.latitude;
-      qqmapsdk.reverseGeocoder({
-        location: {
-          latitude: that.latitude,
-          longitude: that.longitude
-        },
-        success: function(res) {
-          console.log(res);
-          if (res.status == 0) {
-            if (res.result.address) {
-              if (res.result.address_component) {
-                if (
-                  res.result.address_component.province &&
-                  res.result.address_component.city &&
-                  res.result.address_component.district
-                ) {
-                  that.region[0] = res.result.address_component.province;
-                  that.region[1] = res.result.address_component.city;
-                  that.region[2] = res.result.address_component.district;
-                  that.positionTxt =
-                    res.result.address_component.province +
-                    ',' +
-                    res.result.address_component.city +
-                    ',' +
-                    res.result.address_component.district;
-                }
-              }
-              that.$apply();
-            }
-          }
-        },
-        fail: function(res) {
-          console.log(res);
-        },
-        complete: function(res) {}
-      });
-    });
+    const mapres=await wepy.getLocation({ type: 'wgs84' })
+		that.longitude = mapres.longitude;
+		that.latitude = mapres.latitude;
+		qqmapsdk.reverseGeocoder({
+			location: {
+				latitude: that.latitude,
+				longitude: that.longitude
+			},
+			success: function(res) {
+				console.log(res);
+				if (res.status == 0) {
+					if (res.result.address) {
+						that.positionTxt =res.result.address;
+						that.$apply();
+					}
+				}
+			},
+			fail: function(res) {
+				console.log(res);
+			},
+			complete: function(res) {}
+		});
   }
 
   events = {};
+	onShow() {
 
+	}
   onLoad() {
-    let self = this;
-
+		let self = this;
+		this.startdate=Tool.gettodayDate();
+		this.enddate=Tool.gettodayDate();
     this.getplacename();
     this.storelist();
   }

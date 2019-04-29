@@ -89,7 +89,6 @@
   import Group from '../components/group'
   import Toast from 'wepy-com-toast'
   import testMixin from '../mixins/test'
-	import tip from '@/utils/tip';
   console.log('moduleA ignored: ', moduleA) // => moduleA ignored: {}
 
   @connect({
@@ -233,7 +232,6 @@
     }
 
     onLoad() {
-			console.log((new tip).add)
       let self = this
       this.$parent.getUserInfo(function (userInfo) {
         if (userInfo) {
