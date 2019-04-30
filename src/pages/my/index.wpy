@@ -8,10 +8,11 @@
 <template>
   <view class="My">
     <returnvalue></returnvalue>
+		<view class="header">
+			<image src="{{ userInfo.avatarUrl }}"/>
+      <view class="nickname">{{ userInfo.nickName }}</view>
+		</view>
     <tab></tab>
-    <view class="upload" @tap="upload">上传</view>
-    <image src="{{imgurl}}">
-			<view @tap="choosemap">实验</view>
   </view>
 </template>
 
@@ -31,7 +32,7 @@
 
 
     data = {
-			imgurl:""
+			userInfo:""
       
     }
 
@@ -40,42 +41,7 @@
     }
 
     methods = {
-			async choosemap() {
-			const json=	await wepy.chooseLocation();
-			console.log(json)
-			},
-			async upload() {
-				let that=this
-				const res= await wepy.chooseImage()
-		const tempFilePaths = res.tempFilePaths
-		that.imgurl="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1556512217385&di=8fdb8c14647b9e98f282aedc6f560778&imgtype=0&src=http%3A%2F%2Finews.gtimg.com%2Fnewsapp_bt%2F0%2F8408096965%2F641";
-		const json=await api.getimg({
-			query:{
-parameter: {
-makeupId: 28,
-makeupAlpha: 100,
-beautyAlpha: 0,
-hairMask: 0,
-rsp_media_type: "url"
-},
-extra: {
-},
-media_info_list: [
-{
-media_data: that.imgurl,
-media_profiles: {
-media_data_type: "url"
-}
-}
-]
-},
-			method:"post"
-		})
-		that.imgurl=json.data.media_info_list[0].media_data;
-		console.log(json)
-		that.$apply();
-    
-  }
+			
       
      
     }

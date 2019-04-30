@@ -382,6 +382,7 @@
 		<view class="version">版本号V1.0.1</view>
 		<view class="copyright">Copyright@2019 麦优单</view>
 		<tab></tab>
+		<auth :syncTitle.sync="authshow" ></auth>
   </view>
 </template>
 
@@ -391,6 +392,7 @@ import QQMapWX from '@/utils/qqmap-wx-jssdk.min.js';
 import api from '@/api/api.js';
 import Template from '@/utils/template';
 import Tab from '@/components/tab' 
+import Auth from '@/components/auth' 
 import Tool from '@/utils/tem.js' 
 export default class Home extends wepy.page {
   config = {
@@ -400,9 +402,11 @@ export default class Home extends wepy.page {
     navigationBarTextStyle: 'white'
   };
   components = {
-		tab: Tab
+		tab: Tab,
+		auth:Auth
 	}
   data = {
+		authshow:false,
     imgUrls: [
       'https://images.unsplash.com/photo-1551334787-21e6bd3ab135?w=640',
       'https://images.unsplash.com/photo-1551214012-84f95e060dee?w=640',
@@ -502,7 +506,16 @@ export default class Home extends wepy.page {
 			complete: function(res) {}
 		});
   }
-
+	async judgeuser() {
+		let that=this
+		const res=await wepy.getSetting();
+		if (!res.authSetting['scope.userInfo']) {
+			that.authshow = true;
+		} else {
+			that.authshow = false;
+		}	
+		that.$apply();
+	}
   events = {};
 	onShow() {
 
@@ -511,6 +524,8 @@ export default class Home extends wepy.page {
 		let self = this;
 		this.startdate=Tool.gettodayDate();
 		this.enddate=Tool.gettodayDate();
+		wepy.showShareMenu();
+		this.judgeuser();
     this.getplacename();
     this.storelist();
   }

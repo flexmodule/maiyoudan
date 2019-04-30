@@ -1,0 +1,158 @@
+<style lang="less">
+.Auth {
+  .authshadow {
+    background: rgba(0, 0, 0, 0.3);
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99;
+  }
+  .alertbox {
+    width: 590rpx;
+    height: 480rpx;
+    border-radius: 8rpx;
+    background: #fff;
+    padding: 39rpx;
+    box-sizing: border-box;
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    .wechat {
+      font: 36rpx/36rpx '';
+    }
+    .apply {
+      margin: 53rpx 0 62rpx;
+      display: flex;
+      image {
+        width: 96rpx;
+        height: 96rpx;
+        margin-right: 19rpx;
+      }
+      .applytxt {
+        font: 26rpx/90rpx '';
+      }
+    }
+    .applyList {
+      font: 26rpx/26rpx '';
+      color: #999;
+      margin-bottom: 84rpx;
+    }
+    .authBtn {
+      text-align: right;
+      button {
+        display: inline-block;
+        font: 32rpx/32rpx '';
+        color: #41cf8e;
+        border: 0;
+        background: 0;
+        &:after {
+          content: '';
+          border: 0;
+        }
+      }
+    }
+  }
+}
+</style>
+<template>
+  <view class="Auth">
+    <view class="authshadow" style="height:{{oheight}}px">
+      <view class="alertbox">
+        <view class="wechat">微信授权</view>
+        <view class="apply">
+          <image src="../img/logo.png"/>
+          <view class="applytxt">麦优单申请获取以下权限</view>
+        </view>
+        <view class="applyList">获取你的公开信息(昵称、头像等)</view>
+        <view class="authBtn">
+          <button wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="onGotUserInfo">允许</button>
+          <view wx:else>请升级微信版本</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy';
+
+export default class Auth extends wepy.component {
+  data = {
+    canIUse: wx.canIUse('button.open-type.getUserInfo'),
+    oheight: ''
+  };
+	props = {
+    syncTitle: {
+			type: Boolean,
+			default: false,
+			twoWay: true
+    }
+};
+  events = {};
+
+  methods = {};
+	onGotUserInfo(e) {
+    let that = this;
+    if (e.detail.userInfo) {
+      this.$parent.globalData.userInfo = e.detail.userInfo;
+      let appid = this.$parent.globalData.appid;
+      let value = {
+        avatarUrl: e.detail.userInfo.avatarUrl,
+        city: e.detail.userInfo.city,
+        country: e.detail.userInfo.country,
+        gender: e.detail.userInfo.gender,
+        language: e.detail.userInfo.language,
+        nickName: e.detail.userInfo.nickName,
+        province: e.detail.userInfo.province
+			};
+			that.syncTitle=false;
+			wepy.setStorageSync('avatarUrl',e.detail.userInfo.avatarUrl);
+			wepy.setStorageSync('nickName', e.detail.userInfo.nickName);
+			that.$apply();
+      // wx.login({
+      //   success: function(res) {
+      //     if (res.code) {
+      //       //发起网络请求
+      //       apifunc
+      //         .auth(
+      //           `/tour/api/miniAuth?appid=${appid}&code=${res.code}`,
+      //           'get',
+      //           value
+      //         )
+      //         .then(function(res) {
+      //           wepy.setStorageSync('openid', res.data.openid);
+      //           wepy.setStorageSync('userid', res.data.userid);
+      //           wepy.setStorageSync('nickName', e.detail.userInfo.nickName);
+      //           that.$apply();
+      //         });
+      //     } else {
+      //       console.log('登录失败！' + res.errMsg);
+      //     }
+      //   }
+      // });
+    } else {
+      wepy.showModal({
+        title: '警告',
+        content: '您点击了拒绝授权，将无法进入小程序，请授权之后再进入!!!',
+        showCancel: false,
+        confirmText: '返回授权',
+        success: function(res) {
+          if (res.confirm) {
+            console.log('用户点击了“返回授权”');
+          }
+        }
+      });
+    }
+	}
+	
+  onLoad() {
+    let res = wx.getSystemInfoSync();
+		this.oheight = res.windowHeight;
+		this.$apply();
+  }
+}
+</script>
