@@ -39,11 +39,12 @@
     }
 
     methods = {
+      
 			async upload() {
 				let that=this
 				const res= await wepy.chooseImage()
 		const tempFilePaths = res.tempFilePaths
-		that.imgurl=tempFilePaths[0];
+		that.imgurl="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1556467369602&di=c8cbafefaaa973f9f0502fce14fdc11a&imgtype=0&src=http%3A%2F%2Finews.gtimg.com%2Fnewsapp_bt%2F0%2F8281190596%2F641"
 		const json=await api.getimg({
 			query:{
 parameter: {
@@ -59,7 +60,7 @@ media_info_list: [
 {
 media_data: that.imgurl,
 media_profiles: {
-media_data_type: "png"
+media_data_type: "url"
 }
 }
 ]
