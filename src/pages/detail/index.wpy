@@ -1,14 +1,156 @@
 <style lang="less">
-  .Detail {
-
+.Detail {
+  .header {
+    height: 58rpx;
+    padding-left: 180rpx;
+    display: flex;
+    justify-content: space-between;
+    .header-r {
+			display: flex;
+      .share,
+      .like {
+        display: flex;
+        background: #f9dc8e;
+        border-radius: 40rpx;
+				padding: 5rpx 12rpx;
+				margin-left: 10rpx;
+        align-items: center;
+        .sharetxt,.liketxt {
+          font: 26rpx/48rpx '';
+          margin-right: 10rpx;
+          color: #fff;
+        }
+        image {
+          width: 38rpx;
+          height: 38rpx;
+        }
+      }
+    }
+  }
+  .swiper {
+    width: 100%;
+    height: 260rpx;
+    swiper {
+      width: 100%;
+      height: 100%;
+      image {
+        width: 100%;
+        height: 100%;
+      }
+    }
 	}
+	.main {
+		padding: 20rpx;
+		.titlename {
+			font: 700 26rpx/30rpx "";
+			color:#282828;
+		}
+		.des {
+			font: 24rpx/26rpx "";
+			margin: 20rpx 0;
+		}
+		.price {
+			font: 26rpx/30rpx "";
+			color: #ec3a4e;
+		}
+		.position {
+			margin: 20rpx 0;
+		}
+		.position,.phones {
+			display: flex;
+			align-items: center;
+			.position-l,.phones-l {
+				flex: 1;
+				margin-right: 20rpx;
+			}
+			.position-r,.phones-r {
+				width: 48rpx;
+				height: 48rpx;
+				image {
+					width: 100%;
+					height: 100%;
+				}
+			}
+		}
+	}
+	.detailintro,.discount_explain,.use_way {
+		padding: 20rpx;
+		.title {
+			text-align: center;
+			font: 30rpx/50rpx "";
+			color: #282828;
+		}
+		.body {
+			background: #fff;
+			font: 24rpx/30rpx "";
+			padding: 20rpx;
+			box-shadow: 0 0 10rpx rgba(0, 0, 0, 0.05);
+			border-radius: 20rpx;
+		}
+	}
+	.info_handle {
+		padding: 20rpx;
+		.title {
+			font:30rpx/40rpx "";
+			margin-bottom: 20rpx;
+		}
+		.body-t {
+			.label {
+				display: inline-block;
+				padding: 10rpx 20rpx;
+				margin: 0 20rpx 20rpx 0;
+				font: 26rpx/26rpx "";
+				color: #999;
+				border: 1rpx solid #999;
+				border-radius: 40rpx;
+			}
+			.active {
+				color:#ec3a4e;
+				border: 1rpx solid #ec3a4e;
+			}
+		}
+		.body-b {
+			textarea {
+				width: 100%;
+				box-sizing: border-box;
+				height: 200rpx;
+				padding: 20rpx;
+				background: #fff;
+				border: 1rpx solid #eee;
+				border-radius: 20rpx;
+				margin: 0 auto 30rpx;
+			}
+			.submit {
+				width: 200rpx;
+				background: #ec3a4e;
+				text-align: center;
+				color: #fff;
+				margin: 0 auto;
+				font: 26rpx/50rpx "";
+				border-radius: 20rpx;
+			}
+		}
+	}
+}
 </style>
 <template>
   <view class="Detail">
-		<view class="header">
-			<returnvalue></returnvalue>
-		</view>
-		<view class="swiper">
+    <view class="header">
+      <returnvalue></returnvalue>
+      <view class="header-l"></view>
+      <view class="header-r">
+        <view class="like" @tap="tolike">
+          <view class="liketxt">收藏</view>
+          <image wx:if="{{infodetail.isFavorite==0}}" src="../../img/like.png"/>
+					<image wx:else src="../../img/liked.png"/>
+        </view>
+        <view class="share" @tap="toshare">
+          <view class="sharetxt">分享</view>
+          <image src="../../img/share.png"/>
+        </view>
+      </view>
+    </view>
+    <view class="swiper" wx:if="{{imgUrls.length>0?true:false}}">
       <swiper
         indicator-dots="{{indicatorDots}}"
         autoplay="{{autoplay}}"
@@ -18,53 +160,146 @@
       >
         <block wx:for="{{imgUrls}}" wx:key="{{item}}">
           <swiper-item>
-            <image src="{{item}}" class="slide-image" width="355" height="150"></image>
+            <image src="{{item}}" class="slide-image" width="355" height="150"/>
           </swiper-item>
         </block>
       </swiper>
     </view>
+		<view class="main">
+			<view class="titlename">{{infodetail.name?infodetail.name:''}}</view>
+			<view class="des">{{infodetail.descriptions?infodetail.descriptions:''}}</view>
+			<view class="price" wx:if="{{infodetail.averagePrice}}">¥{{infodetail.averagePrice?infodetail.averagePrice:''}}</view>
+			<view class="position" wx:if="{{infodetail.area}}">
+				<view class="position-l">{{infodetail.area?infodetail.area:''}}</view>
+				<view class="position-r"><image src="../../img/pos.png"/></view>
+			</view>
+			<view class="phones" wx:if="{{infodetail.phones}}">
+				<view class="phones-l">{{infodetail.phones?infodetail.phones:''}}</view>
+				<view class="phones-r"><image src="../../img/tel.png"/></view>
+			</view>
+		</view>
+		<view class="detailintro" wx:if="{{infodetail.detail}}">
+			<view class="title">详情介绍</view>
+			<view class="body"><rich-text nodes="{{infodetail.detail?infodetail.detail:''}}"></rich-text></view>
+		</view>
+		<view class="discount_explain" wx:if="{{infodetail.introduction}}">
+			<view class="title">优惠说明</view>
+			<view class="body"><rich-text nodes="{{infodetail.introduction?infodetail.introduction:''}}"></rich-text></view>
+		</view>
+		<view class="use_way" wx:if="{{infodetail.useway}}">
+			<view class="title">使用步骤</view>
+			<view class="body"><rich-text nodes="{{infodetail.useway?infodetail.useway:''}}"></rich-text></view>
+		</view>
+		<!-- <view class="info_handle">
+			<view class="title">信息纠错</view>
+			<view class="body">
+				<view class="body-t">
+					<repeat for="{{labeldata}}" key="index" index="index" item="item">
+						<view class="label {{item.show?'active':''}}" @tap="tolabel({{item}})">{{item.value}}</view>
+					</repeat>
+				</view>
+				<view class="body-b">
+					<textarea wx:if="{{istextarea}}" placeholder="请说明错误信息内容" maxlength="200" @input="inputinfo"/>
+					<view class="submit">纠错</view>
+				</view>
+			</view>
+		</view> -->
   </view>
 </template>
 
 <script>
-	import wepy from 'wepy'
-	import api from '@/api/api.js';
-	import Tab from '@/components/tab' ;
-	import Template from '@/utils/template';
-	import Returnvalue from '@/components/returnvalue' 
-	import Tool from '@/utils/tem.js' 
-  export default class Detail extends wepy.page {
-    config = {
-      navigationBarTitleText: '麦优单详情'
-    }
-    components = {
-      tab:Tab,
-			returnvalue:Returnvalue
-    }
+import wepy from 'wepy';
+import api from '@/api/api.js';
+import Tab from '@/components/tab';
+import Template from '@/utils/template';
+import Returnvalue from '@/components/returnvalue';
+import Tool from '@/utils/tem.js';
+export default class Detail extends wepy.page {
+  config = {
+    navigationBarTitleText: '麦优单详情'
+  };
+  components = {
+    tab: Tab,
+    returnvalue: Returnvalue
+  };
 
+  data = {
+    imgUrls: [],
+    indicatorDots: true,
+    autoplay: false,
+    interval: 5000,
+    duration: 1000,
+    latitude: '',
+    longitude: '',
+    userId: '',
+    id: '',
+		infodetail: '',
+		istextarea:false,
+		labeldata:[{id:"1",value:"价格不对",show:false},{id:"2",value:"位置不对",show:false},{id:"3",value:"活动已经结束",show:false},{id:"4",value:"内容错误",show:false},{id:"5",value:"使用条件不对",show:false},{id:"6",value:"其它",show:false}]
+  };
 
-    data = {
-      mynum: 20,
-      
+  computed = {};
+
+  methods = {
+		tolabel(item) {
+			this.labeldata.forEach(ele => {
+				if(ele.id==item.id) {
+					ele.show=!ele.show
+				}
+			});
+			if(item.value=="其它"&&!item.show) {
+				this.istextarea=true
+			} else {
+				this.istextarea=false
+			}
+		},
+		inputinfo() {
+
+		},
+		toshare() {
+
+		},
+		tolike() {
+			if(this.infodetail.isFavorite==0) {
+				this.infodetail.isFavorite=1;
+			} else {
+				this.infodetail.isFavorite=0;
+			}
+		}
+	};
+  async getdetail() {
+    let that = this;
+    const res = await wepy.getLocation({ type: 'wgs84' });
+    that.latitude = res.latitude;
+    that.longitude = res.longitude;
+    let data = {
+      currentLatitude: that.latitude,
+      currentLongitude: that.longitude,
+      userId: that.userId,
+      id: that.id
+    };
+    const json = await api.getDetail({ query: data });
+    if (json.data.meta.success) {
+			that.infodetail = json.data.data;
+			if(that.infodetail.specialImgs) {
+				that.imgUrls=that.infodetail.specialImgs.split(",")
+			}
+    } else {
+      Template.error(json.data.meta.message);
     }
-
-    computed = {
-     
-    }
-
-    methods = {
-
-      
-     
-    }
-
-    events = {
-      
-    }
-
-    onLoad() {
-      let self = this
-      
-    }
+    that.$apply();
   }
+  events = {};
+
+  onLoad(options) {
+    let self = this;
+    if (options.id) {
+      this.id = options.id;
+    } else {
+      this.id = '';
+    }
+    this.getdetail();
+    this.$apply();
+  }
+}
 </script>

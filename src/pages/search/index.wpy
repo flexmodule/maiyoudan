@@ -302,7 +302,7 @@
 
     data = {
 			channeldata:["线上","同城线下"],
-			labeldata:["美食","休闲娱乐","旅游","银行卡联合优惠"],
+			labeldata:["美食","休闲娱乐","旅游","银行卡联合优惠","交通出行"],
 			patterndata:["去收钱","去买单"],
 			datedata:["今日","明日"],
 			startdate:"",
@@ -396,13 +396,16 @@
     that.latitude = res.latitude;
     that.longitude = res.longitude;
     let data = {
-      type: 1,
-      takeoutSwitch: 1,
-      pageNo: that.params.pageNo,
-      pageSize: that.params.pageSize,
+			type: "",
+			channel:"",
+			label:"",
+			startdate:that.startdate,
+			enddate:that.enddate,
+      pageNo: 1,
+			pageSize: 10,
+			inputvalue:"",
       currentLatitude: that.latitude,
       currentLongitude: that.longitude,
-      lang: ''
     };
     const json = await api.hostGoodsList({ query: data });
     if (json.data.meta.success) {
@@ -440,13 +443,14 @@
       
     }
 		onShow() {
-			this.startdate=Tool.gettodayDate();
-			this.enddate=Tool.gettodayDate();
+			
 		}
     onLoad() {
 			let self = this
 			this.islabel=false;
 			this.isblank=false;
+			this.startdate=Tool.gettodayDate();
+			this.enddate=Tool.gettodayDate();
 			this.dateindex=0;
 			this.storelist();
     }
